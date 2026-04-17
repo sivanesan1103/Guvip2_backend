@@ -95,6 +95,7 @@ Frontend URL: `http://localhost:5173`
 ## Config
 
 - Use profile `mysql` in Railway: `SPRING_PROFILES_ACTIVE=mysql`
+- If `SPRING_PROFILES_ACTIVE` is not set, the app auto-enables `mysql` profile when Railway MySQL env vars are present.
 - Set MySQL env vars in Railway service variables:
   - `MYSQLHOST` (or `RAILWAY_PRIVATE_DOMAIN`)
   - `MYSQLPORT` (default `3306`)

@@ -42,12 +42,15 @@ public class EmailService {
         if (!mailEnabled) {
             throw new BadRequestException("Email is disabled. Set app.mail.enabled=true to send emails.");
         }
+        validateFromAddress();
         try {
             sendMail(to, subject, body);
         } catch (MailAuthenticationException ex) {
             throw new BadRequestException("SMTP authentication failed. Verify spring.mail.username and app password.");
         } catch (MailException ex) {
             throw new BadRequestException("Unable to send email. Check SMTP configuration and network access.");
+        } catch (IllegalArgumentException ex) {
+            throw new BadRequestException("Invalid mail configuration. Set MAIL_USERNAME to a valid sender address.");
         }
     }
 
@@ -55,9 +58,13 @@ public class EmailService {
         if (!mailEnabled) {
             return;
         }
+        if (fromAddress == null || fromAddress.isBlank()) {
+            LOGGER.warn("Skipping non-critical email to {} because MAIL_USERNAME is not configured.", to);
+            return;
+        }
         try {
             sendMail(to, subject, body);
-        } catch (MailException ex) {
+        } catch (MailException | IllegalArgumentException ex) {
             LOGGER.warn("Skipping non-critical email to {} due to SMTP issue: {}", to, ex.getMessage());
         }
     }
@@ -69,5 +76,11 @@ public class EmailService {
         message.setSubject(subject);
         message.setText(body);
         mailSender.send(message);
+    }
+
+    private void validateFromAddress() {
+        if (fromAddress == null || fromAddress.isBlank()) {
+            throw new BadRequestException("MAIL_USERNAME is required when email is enabled.");
+        }
     }
 }
