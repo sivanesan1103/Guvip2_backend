@@ -48,7 +48,7 @@ public class AuthService {
 
         emailService.sendRegistrationEmail(user.getEmail());
         String token = jwtService.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
+        return buildAuthResponse(token, user);
     }
 
     public AuthResponse login(AuthRequest request) {
@@ -58,6 +58,15 @@ public class AuthService {
         User user = userRepository.findByEmail(normalizedEmail)
                 .orElseThrow(() -> new BadRequestException("Invalid credentials"));
         String token = jwtService.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getId(), user.getEmail(), user.getRole());
+        return buildAuthResponse(token, user);
+    }
+
+    private AuthResponse buildAuthResponse(String token, User user) {
+        AuthResponse response = new AuthResponse();
+        response.setToken(token);
+        response.setUserId(user.getId());
+        response.setEmail(user.getEmail());
+        response.setRole(user.getRole());
+        return response;
     }
 }
