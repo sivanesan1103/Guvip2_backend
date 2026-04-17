@@ -92,15 +92,40 @@ Frontend URL: `http://localhost:5173`
 }
 ```
 
-## Config
+## Config (Railway)
 
-- Use profile `mysql` in Railway: `SPRING_PROFILES_ACTIVE=mysql`
-- If `SPRING_PROFILES_ACTIVE` is not set, the app auto-enables `mysql` profile when Railway MySQL env vars are present.
-- Set MySQL env vars in Railway service variables:
-  - `MYSQLHOST` (or `RAILWAY_PRIVATE_DOMAIN`)
-  - `MYSQLPORT` (default `3306`)
-  - `MYSQLDATABASE` (or `MYSQL_DATABASE`)
-  - `MYSQLUSER`
-  - `MYSQLPASSWORD` (or `MYSQL_ROOT_PASSWORD`)
-- Mail notifications are controlled by `APP_MAIL_ENABLED=true` and mail vars (`MAIL_USERNAME`, `MAIL_PASSWORD`, etc.)
-# Guvip2_backend
+### Recommended backend variables
+
+```env
+SPRING_PROFILES_ACTIVE=mysql
+
+MYSQLHOST=mysql.railway.internal
+MYSQLPORT=3306
+MYSQLDATABASE=railway
+MYSQLUSER=root
+MYSQLPASSWORD=<mysql-password>
+
+APP_MAIL_ENABLED=true
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=<sender-email>
+MAIL_PASSWORD=<gmail-app-password>
+```
+
+### Supported DB input styles
+
+Any one style works:
+
+- Spring style: `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`
+- Railway MySQL style: `MYSQLHOST` / `MYSQLPORT` / `MYSQLDATABASE` / `MYSQLUSER` / `MYSQLPASSWORD`
+- URL style: `MYSQL_URL` or `MYSQL_PUBLIC_URL`
+
+### Important conflict rule
+
+If you use `MYSQLHOST`/`MYSQLPORT`/`MYSQLDATABASE`, remove or leave empty conflicting URL vars (`MYSQL_URL`, `MYSQL_PUBLIC_URL`) that point to another host.
+
+### Troubleshooting
+
+- Browser shows CORS error + backend returns `502`: backend is down; check Railway deploy logs.
+- `Communications link failure` / `Connection refused`: DB host/port is wrong or DB is not reachable from backend service.
+- `/api/admin/*` returns `403`: use a valid `ADMIN` token.
