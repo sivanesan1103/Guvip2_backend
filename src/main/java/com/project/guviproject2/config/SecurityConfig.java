@@ -37,7 +37,7 @@ public class SecurityConfig {
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
             UserDetailsService userDetailsService,
-            @Value("${app.cors.allowed-origin-patterns:http://localhost:5173,http://localhost:3000,https://*.up.railway.app}") String allowedOriginPatterns) {
+            @Value("${app.cors.allowed-origin-patterns:http://localhost:5173,http://localhost:3000,https://*.vercel.app,https://*.up.railway.app}") String allowedOriginPatterns) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userDetailsService = userDetailsService;
         this.allowedOriginPatterns = allowedOriginPatterns;
