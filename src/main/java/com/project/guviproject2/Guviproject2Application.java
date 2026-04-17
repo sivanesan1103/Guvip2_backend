@@ -15,6 +15,10 @@ public class Guviproject2Application {
 		SpringApplication application = new SpringApplication(Guviproject2Application.class);
 		String activeProfile = System.getenv("SPRING_PROFILES_ACTIVE");
 		String mysqlUrl = firstNonBlank(System.getenv("MYSQL_URL"), System.getenv("MYSQL_PUBLIC_URL"));
+		boolean hasDiscreteMysqlConfig = isConfigured(System.getenv("MYSQLHOST"))
+				|| isConfigured(System.getenv("RAILWAY_PRIVATE_DOMAIN"))
+				|| isConfigured(System.getenv("MYSQLDATABASE"))
+				|| isConfigured(System.getenv("MYSQL_DATABASE"));
 		boolean hasRailwayMysqlConfig = isConfigured(System.getenv("MYSQLHOST"))
 				|| isConfigured(System.getenv("RAILWAY_PRIVATE_DOMAIN"))
 				|| isConfigured(System.getenv("MYSQLDATABASE"))
@@ -27,7 +31,7 @@ public class Guviproject2Application {
 			defaults.put("spring.profiles.active", "mysql");
 		}
 
-		if (!hasText(System.getenv("SPRING_DATASOURCE_URL")) && isConfigured(mysqlUrl)) {
+		if (!hasText(System.getenv("SPRING_DATASOURCE_URL")) && isConfigured(mysqlUrl) && !hasDiscreteMysqlConfig) {
 			MySqlConnectionInfo connectionInfo = parseMysqlUrl(mysqlUrl);
 			if (connectionInfo != null) {
 				defaults.put("spring.datasource.url", connectionInfo.jdbcUrl());
