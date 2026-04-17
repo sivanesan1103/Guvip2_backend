@@ -7,6 +7,7 @@ import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.project.guviproject2.exception.BadRequestException;
@@ -28,11 +29,13 @@ public class EmailService {
         this.mailEnabled = mailEnabled;
     }
 
+    @Async
     public void sendRegistrationEmail(String to) {
         sendMailIfEnabled(to, "Welcome to Quiz Platform",
                 "Your account is ready. You can now log in and start assessments.");
     }
 
+    @Async
     public void sendResultEmail(String to, String quizTitle, int score, int total) {
         sendMailIfEnabled(to, "Quiz Result: " + quizTitle,
                 "You completed \"" + quizTitle + "\".\nScore: " + score + "/" + total);
