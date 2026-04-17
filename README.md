@@ -94,6 +94,12 @@ Frontend URL: `http://localhost:5173`
 
 ## Config
 
-- Update MySQL and SMTP values in `src/main/resources/application.properties`
-- Mail notifications are controlled by `app.mail.enabled` (default `false` for local run)
+- Use profile `mysql` in Railway: `SPRING_PROFILES_ACTIVE=mysql`
+- Set MySQL env vars in Railway service variables:
+  - `MYSQLHOST` (or `RAILWAY_PRIVATE_DOMAIN`)
+  - `MYSQLPORT` (default `3306`)
+  - `MYSQLDATABASE` (or `MYSQL_DATABASE`)
+  - `MYSQLUSER`
+  - `MYSQLPASSWORD` (or `MYSQL_ROOT_PASSWORD`)
+- Mail notifications are controlled by `APP_MAIL_ENABLED=true` and mail vars (`MAIL_USERNAME`, `MAIL_PASSWORD`, etc.)
 # Guvip2_backend
